@@ -1,0 +1,9 @@
+fastapi==0.139.1
+uvicorn==0.51.0
+SQLAlchemy==2.0.51
+pydantic==2.13.4
+email-validator==2.3.0
+python-jose==3.5.0
+passlib==1.7.4
+bcrypt==4.0.1
+python-json-logger==4.1.0

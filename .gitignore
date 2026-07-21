@@ -1,0 +1,13 @@
+#python
+__pycache__/
+*.pyc
+
+#virtual environment
+venv/
+
+#macOS
+.DS_Store
+
+#Logs
+*.log
+logs/
