@@ -11,3 +11,9 @@ venv/
 #Logs
 *.log
 logs/
+
+#environment variables
+.env
+
+#database
+data/employee.db

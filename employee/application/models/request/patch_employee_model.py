@@ -18,4 +18,4 @@ class PatchEmployeeRequest(BaseModel):
     manager_id: int | None = None
     salary: int | None = None
     currency: str | None = None
-    active: bool | None = None
+    is_active: bool | None = None
