@@ -1,12 +1,35 @@
-# Employee Management System
+# Employee Management System API
 
-A backend application built using **FastAPI** that provides secure employee management with authentication, role-based authorization, and CRUD operations. The application follows a layered architecture using repositories and services, supports Docker deployment, and uses SQLite as the database.
+A backend application built using **FastAPI** that provides secure employee management with authentication, role-based authorization, and employee CRUD operations. The application follows a layered architecture using repositories and services, supports Docker deployment, and uses SQLite as the database.
+
+---
+
+## Live Deployment
+
+**Base URL**
+
+```
+https://employeemanagementsystemapi-ij2t.onrender.com
+```
+
+**Swagger UI**
+
+```
+https://employeemanagementsystemapi-ij2t.onrender.com/docs
+```
+
+**ReDoc**
+
+```
+https://employeemanagementsystemapi-ij2t.onrender.com/redoc
+```
 
 ---
 
 ## Features
 
 - JWT Authentication
+- Role-Based Authorization
 - Secure Password Hashing (bcrypt)
 - Employee CRUD Operations
 - Partial Updates (PATCH)
@@ -14,7 +37,7 @@ A backend application built using **FastAPI** that provides secure employee mana
 - Repository-Service Architecture
 - Structured JSON Logging
 - Automatic Initial Admin Seeding
-- Docker Support
+- Dockerized Deployment
 - Environment Variable Configuration
 
 ---
@@ -26,7 +49,7 @@ A backend application built using **FastAPI** that provides secure employee mana
 - SQLAlchemy
 - SQLite
 - Pydantic
-- JWT (python-jose)
+- python-jose (JWT)
 - Passlib (bcrypt)
 - Docker
 - Python JSON Logger
@@ -51,6 +74,33 @@ A backend application built using **FastAPI** that provides secure employee mana
 
 ---
 
+## Architecture
+
+The application follows a layered architecture:
+
+```
+Client
+   │
+   ▼
+FastAPI Endpoints
+   │
+   ▼
+Services
+   │
+   ▼
+Repositories
+   │
+   ▼
+SQLite Database
+```
+
+- **Endpoints** handle HTTP requests and responses.
+- **Services** contain business logic.
+- **Repositories** interact with the database.
+- **JWT Authentication** secures protected APIs.
+
+---
+
 ## Environment Variables
 
 Create a `.env` file in the project root.
@@ -69,25 +119,25 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 ### Clone the repository
 
 ```bash
-git clone https://github.com/zebafatma/EmployeeManagementSystemAPI
+git clone https://github.com/zebafatma/EmployeeManagementSystemAPI.git
 cd EmployeeManagementSystemAPI
 ```
 
-### Create virtual environment
+### Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-### Activate virtual environment
+### Activate the virtual environment
 
-#### Windows
+**Windows**
 
 ```bash
 venv\Scripts\activate
 ```
 
-#### macOS/Linux
+**macOS/Linux**
 
 ```bash
 source venv/bin/activate
@@ -105,7 +155,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Swagger UI:
+Swagger:
 
 ```
 http://localhost:8000/docs
@@ -113,55 +163,63 @@ http://localhost:8000/docs
 
 ---
 
-## Docker
+## Running with Docker
 
-### Build the Docker image
+### Build the image
 
 ```bash
-docker build -t app .
+docker build -t employee-management-api .
 ```
 
-### Run the Docker container
+### Run the container
 
 ```bash
 docker run \
   --name employee-management-app \
   --env-file .env \
   -p 8000:8000 \
-  app
+  employee-management-api
 ```
 
 ---
 
 ## Initial Admin
 
-On application startup, the system automatically checks whether an administrator exists.
+On application startup, the system checks whether an administrator exists.
 
-- If no administrator exists, a default admin employee is created.
-- If an administrator already exists, the seed process is skipped.
+- If no administrator exists, a default administrator employee is seeded.
+- The seeded employee can complete signup using the following details:
 
-This initialization is idempotent and runs only when required.
+| Field | Value |
+|-------|------|
+| Employee ID | 1 |
+| Email | admin@gmail.com |
+
+After signing up, the administrator can sign in and receive a JWT access token.
+
+The seeding process is **idempotent**, meaning it runs only when no administrator exists.
 
 ---
 
 ## Authentication Flow
 
-1. An employee with the **Admin** role is seeded into the Employee table.
-2. The seeded admin signs up using their employee details.
-3. Credentials are stored securely with hashed passwords.
-4. The admin signs in to receive a JWT access token.
-5. The JWT token is used to access protected APIs.
+1. A default administrator employee is seeded during application startup.
+2. The administrator completes signup using the seeded employee details.
+3. Passwords are securely hashed using bcrypt.
+4. The administrator signs in to receive a JWT access token.
+5. The JWT token is supplied in the `Authorization` header to access protected endpoints.
 
 ---
 
 ## Logging
 
-The application uses structured JSON logging for:
+Structured JSON logging is implemented for:
 
 - Application startup
-- Employee seeding
-- API events
-- Errors and exceptions
+- Admin seeding
+- API requests
+- Error handling
+- Exception logging
 
 ---
 
@@ -177,6 +235,12 @@ ReDoc
 
 ```
 http://localhost:8000/redoc
+```
+
+For the deployed application:
+
+```
+https://employeemanagementsystemapi-ij2t.onrender.com/docs
 ```
 
 ---
@@ -196,7 +260,8 @@ http://localhost:8000/redoc
 - Refactor database session management using FastAPI dependency injection
 - Migrate from SQLite to PostgreSQL
 - Add Alembic database migrations
-- Add GitHub Actions CI/CD pipeline
+- Implement GitHub Actions CI/CD
+- Add Docker Compose support
 
 ---
 
