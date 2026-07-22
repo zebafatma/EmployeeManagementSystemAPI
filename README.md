@@ -70,8 +70,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 ### Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/zebafatma/EmployeeManagementSystemAPI
+cd EmployeeManagementSystemAPI
 ```
 
 ### Create virtual environment
