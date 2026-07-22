@@ -43,7 +43,8 @@ def seed_admin():
 
         logger.info(
             "Admin employee seeded successfully. Use the credentials for Signup- Employee ID: %s, Email Id: %s",
-            employee.id,employee.email,
+            employee.id,
+            employee.email,
         )
 
     except Exception:
