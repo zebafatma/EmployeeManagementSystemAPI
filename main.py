@@ -11,6 +11,7 @@ from common.logger.logger import configure_logging
 from data.database import Base, engine
 from employee.endpoints.auth_endpoint import router as auth_router
 from employee.endpoints.employee_endpoint import router as employee_router
+from employee.endpoints.home_endpoint import router as home_router
 from startup import lifespan
 
 app = FastAPI(
@@ -29,6 +30,8 @@ Base.metadata.create_all(
 app.add_exception_handler(AppException, app_exception_handler)  # type: ignore
 app.add_exception_handler(Exception, global_exception_handler)  # type: ignore
 app.add_exception_handler(RequestValidationError, validation_exception_handler)  # type: ignore
+
+app.include_router(home_router)
 
 app.include_router(auth_router)
 
