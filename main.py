@@ -11,11 +11,13 @@ from common.logger.logger import configure_logging
 from data.database import Base, engine
 from employee.endpoints.auth_endpoint import router as auth_router
 from employee.endpoints.employee_endpoint import router as employee_router
+from startup import lifespan
 
 app = FastAPI(
     title="Employee Management System",
     version="1.0.0",
     description="REST API for managing Employees",
+    lifespan=lifespan,
 )
 
 configure_logging()

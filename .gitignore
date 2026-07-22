@@ -1,19 +1,25 @@
-#python
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 
-#virtual environment
+# Virtual Environment
 venv/
+.venv/
 
-#macOS
+# macOS
 .DS_Store
 
-#Logs
+# Logs
 *.log
 logs/
 
-#environment variables
+# Environment Variables
 .env
 
-#database
+# Database
 data/employee.db
+*.db
+
+# IDE
+.vscode/
+.idea/
