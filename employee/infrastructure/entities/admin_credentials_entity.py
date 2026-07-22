@@ -19,5 +19,5 @@ class AdminCredentials(Base):
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     last_login: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc), nullable=False
+        default=lambda: datetime.now(timezone.utc), nullable=False
     )

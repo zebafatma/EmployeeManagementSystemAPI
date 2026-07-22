@@ -19,11 +19,10 @@ class AuthRepository:
         )
 
     def create_admin(self, admin: AdminCredentials):
-        db = SessionLocal()
         try:
-            db.add(admin)
-            db.commit()
-            db.refresh(admin)
+            self.db.add(admin)
+            self.db.commit()
+            self.db.refresh(admin)
             return admin
         except:
             self.db.rollback()

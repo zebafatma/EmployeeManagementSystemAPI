@@ -11,7 +11,6 @@ A backend application built using **FastAPI** that provides secure employee mana
 - Employee CRUD Operations
 - Partial Updates (PATCH)
 - Pagination & Filtering
-- Role-Based Access Control
 - Repository-Service Architecture
 - Structured JSON Logging
 - Automatic Initial Admin Seeding
@@ -188,6 +187,16 @@ http://localhost:8000/redoc
 - Password Hashing using bcrypt
 - Environment-based configuration
 - Role-Based Authorization
+
+---
+
+## Future Improvements
+
+- Add automated tests using pytest
+- Refactor database session management using FastAPI dependency injection
+- Migrate from SQLite to PostgreSQL
+- Add Alembic database migrations
+- Add GitHub Actions CI/CD pipeline
 
 ---
 

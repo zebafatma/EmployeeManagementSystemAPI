@@ -36,7 +36,7 @@ class PatchEmployeeService:
 
             if request.email is not None:
                 existing_emp = repository.get_employee_by_email(request.email)
-                if existing_emp is not None and existing_emp.emp_id != id:
+                if existing_emp is not None and existing_emp.id != id:
                     logger.warning(f"Employee with email {request.email} already exist")
                     raise EmployeeWithEmailAlreadyExistsException()
 
