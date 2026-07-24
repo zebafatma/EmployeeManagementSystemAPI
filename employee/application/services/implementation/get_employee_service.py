@@ -1,17 +1,21 @@
 import logging
 
 from common.exception.not_found_exception import EmployeeWithIdNotFoundException
-from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
-from employee.application.services.interface.get_employee_service_interface import GetEmployeeServiceInterface
+from employee.application.services.interface.get_employee_service_interface import (
+    GetEmployeeServiceInterface,
+)
+from employee.infrastructure.repository.interface.employee_repository_interface import (
+    EmployeeRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class GetEmployeeService(GetEmployeeServiceInterface):
 
-    def __init__(self, repository:EmployeeRepositoryInterface):
-        self.repository=repository
-        
+    def __init__(self, repository: EmployeeRepositoryInterface):
+        self.repository = repository
+
     def get_employee(self, id, current_admin):
 
         logger.info(f"Get request recieved by admin {current_admin.id}")

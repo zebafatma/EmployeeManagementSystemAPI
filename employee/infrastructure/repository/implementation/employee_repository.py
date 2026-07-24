@@ -2,7 +2,9 @@ import logging
 
 from data.database import SessionLocal
 from employee.infrastructure.entities.employee_entity import Employee
-from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
+from employee.infrastructure.repository.interface.employee_repository_interface import (
+    EmployeeRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 

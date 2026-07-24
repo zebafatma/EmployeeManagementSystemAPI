@@ -11,17 +11,21 @@ from common.utils.request_validation import RequestValidation
 from employee.application.models.request.patch_employee_model import (
     PatchEmployeeRequest,
 )
-from employee.application.services.interface.patch_employee_service_interface import PatchEmployeeServiceInterface
+from employee.application.services.interface.patch_employee_service_interface import (
+    PatchEmployeeServiceInterface,
+)
 from employee.application.validations.employee_validator import EmployeeValidator
-from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
+from employee.infrastructure.repository.interface.employee_repository_interface import (
+    EmployeeRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class PatchEmployeeService(PatchEmployeeServiceInterface):
 
-    def __init__(self, repository:EmployeeRepositoryInterface):
-        self.repository=repository
+    def __init__(self, repository: EmployeeRepositoryInterface):
+        self.repository = repository
 
     def patch(self, id: int, request: PatchEmployeeRequest, current_admin):
 

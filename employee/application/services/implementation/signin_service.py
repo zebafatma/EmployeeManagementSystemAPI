@@ -7,16 +7,20 @@ from common.exception.unauthorized_exception import (
     InvalidCredentialsException,
 )
 from employee.application.models.request.signin_model import SigninRequest
-from employee.infrastructure.repository.interface.auth_repository_interface import AuthRepositoryInterface
-from employee.application.services.interface.signin_service_interface import SigninServiceInterface
+from employee.application.services.interface.signin_service_interface import (
+    SigninServiceInterface,
+)
+from employee.infrastructure.repository.interface.auth_repository_interface import (
+    AuthRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class SigninService(SigninServiceInterface):
 
-    def __init__(self, repository:AuthRepositoryInterface):
-        self.repository=repository
+    def __init__(self, repository: AuthRepositoryInterface):
+        self.repository = repository
 
     def signin(self, request: SigninRequest):
 
@@ -29,19 +33,19 @@ class SigninService(SigninServiceInterface):
             if admin is None:
                 logger.error(f"Invalid Credentials provided by {request.email}")
                 raise InvalidCredentialsException()
-            
+
             if not verify_password(request.password, admin.password):
                 logger.error(f"Invalid Creadentials provided by {request.email}")
                 raise InvalidCredentialsException()
-            
+
             if not admin.is_active:
                 logger.error(f"Inactive admin: {request.email}")
                 raise InactiveAccountException()
-            
+
             self.repository.update_last_login(admin)
             access_token = create_access_token({"sub": admin.email, "id": admin.id})
             logger.info(f"Signing In admin {request.email}")
             return {"access_token": access_token, "token_type": "bearer"}
-        
+
         finally:
             self.repository.close()

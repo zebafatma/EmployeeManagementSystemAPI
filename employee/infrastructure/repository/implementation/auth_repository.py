@@ -3,7 +3,9 @@ from datetime import datetime, timezone
 
 from data.database import SessionLocal
 from employee.infrastructure.entities.admin_credentials_entity import AdminCredentials
-from employee.infrastructure.repository.interface.auth_repository_interface import AuthRepositoryInterface
+from employee.infrastructure.repository.interface.auth_repository_interface import (
+    AuthRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 

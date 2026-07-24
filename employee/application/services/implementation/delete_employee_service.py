@@ -1,15 +1,20 @@
 import logging
 
 from common.exception.not_found_exception import EmployeeWithIdNotFoundException
-from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
-from employee.application.services.interface.delete_employee_service_interface import DeleteEmployeeServiceInterface
+from employee.application.services.interface.delete_employee_service_interface import (
+    DeleteEmployeeServiceInterface,
+)
+from employee.infrastructure.repository.interface.employee_repository_interface import (
+    EmployeeRepositoryInterface,
+)
+
 logger = logging.getLogger(__name__)
 
 
 class DeleteEmployeeService(DeleteEmployeeServiceInterface):
 
-    def __init__(self, repository:EmployeeRepositoryInterface):
-        self.repository=repository
+    def __init__(self, repository: EmployeeRepositoryInterface):
+        self.repository = repository
 
     def delete(self, id: int, current_admin):
 

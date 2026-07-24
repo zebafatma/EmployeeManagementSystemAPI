@@ -20,7 +20,6 @@ app = FastAPI(
     description="REST API for managing Employees",
     lifespan=lifespan,
 )
-
 configure_logging()
 
 Base.metadata.create_all(

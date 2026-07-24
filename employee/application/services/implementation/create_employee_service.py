@@ -6,22 +6,26 @@ from common.exception.bad_request_exception import (
     InvalidDateOfBirthException,
     InvalidJoiningDateException,
 )
-from employee.application.services.interface.create_employee_service_interface import CreateEmployeeServiceInterface
 from common.utils.request_validation import RequestValidation
 from employee.application.models.request.create_employee_model import (
     CreateEmployeeRequest,
 )
+from employee.application.services.interface.create_employee_service_interface import (
+    CreateEmployeeServiceInterface,
+)
 from employee.application.validations.employee_validator import EmployeeValidator
 from employee.infrastructure.entities.employee_entity import Employee
-from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
+from employee.infrastructure.repository.interface.employee_repository_interface import (
+    EmployeeRepositoryInterface,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class CreateEmployeeService(CreateEmployeeServiceInterface):
 
-    def __init__(self, repository:EmployeeRepositoryInterface):
-        self.repository=repository
+    def __init__(self, repository: EmployeeRepositoryInterface):
+        self.repository = repository
 
     def create(self, request: CreateEmployeeRequest, current_admin):
 
