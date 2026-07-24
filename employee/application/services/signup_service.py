@@ -23,20 +23,20 @@ class SignupService:
         try:
             employee = employee_repository.get_employee_by_id(request.id)
             if employee is None:
-                logger.warning(f"Employee {request.id} not found")
-                raise EmployeeWithIdNotFoundException()
+                logger.error(f"Employee {request.id} not found")
+                raise EmployeeWithIdNotFoundException(request.id)
             if employee.email != request.email:
-                logger.warning(
+                logger.error(
                     f"Signup email: {request.email} diffrent from original email"
                 )
                 raise DiffrentEmailException()
             if employee.role != "admin":
-                logger.warning(f"Employee {request.id} not authorized to signup")
+                logger.error(f"Employee {request.id} not authorized to signup")
                 raise UnauthorizedEmployeeException()
             admin_exists = auth_repository.get_admin_by_email(employee.email)
             if admin_exists:
-                logger.warning(f"Admin with {request.email} already exist")
-                raise AdminAlreadyExistsException()
+                logger.error(f"Admin with {request.email} already exist")
+                raise AdminAlreadyExistsException(request.email)
             hashed_password = hash_password(request.password)
             new_admin = AdminCredentials(
                 id=request.id,

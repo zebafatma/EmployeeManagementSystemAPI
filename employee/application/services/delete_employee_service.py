@@ -15,11 +15,11 @@ class DeleteEmployeeService:
         try:
             employee = repository.get_employee_by_id(id)
             if employee is None:
-                logger.warning(f"Employee {id} not found")
-                raise EmployeeWithIdNotFoundException()
+                logger.error(f"Employee {id} not found")
+                raise EmployeeWithIdNotFoundException(id)
             repository.delete(employee)
             logger.info(
-                f"Employee {id} deleted successfull by admin {current_admin.id}"
+                f"Employee {id} deleted successfully by admin {current_admin.id}"
             )
             return {"message": "Employee deleted successfully!"}
         finally:

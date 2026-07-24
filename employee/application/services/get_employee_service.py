@@ -15,8 +15,8 @@ class GetEmployeeService:
         try:
             employee = repository.get_employee_by_id(id)
             if employee is None:
-                logger.warning(f"Employee {id} not found")
-                raise EmployeeWithIdNotFoundException()
+                logger.error(f"Employee {id} not found")
+                raise EmployeeWithIdNotFoundException(id)
             logger.info(f"Getting Employee {id} for admin {current_admin.id}")
             return employee
         finally:

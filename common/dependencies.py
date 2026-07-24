@@ -25,11 +25,11 @@ def get_current_user(
         payload = decode_access_token(token)
         email = payload.get("sub")
         if email is None:
-            logger.warning("Token doesnot contain email")
+            logger.error("Token doesnot contain email")
             raise InvalidTokenException()
         admin = repository.get_admin_by_email(email)
         if admin is None:
-            logger.warning(f"No admin found for email: {email}")
+            logger.error(f"No admin found for email: {email}")
             raise InvalidTokenException()
         logger.info(f"User authenticated successfully: {email}")
         return admin

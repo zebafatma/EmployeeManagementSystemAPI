@@ -1,10 +1,14 @@
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from common.dependencies import get_current_user
 from employee.application.models.request.create_employee_model import (
     CreateEmployeeRequest,
+)
+from employee.application.models.request.get_all_employee_request_model import (
+    GetAllEmployeeRequest,
 )
 from employee.application.models.request.patch_employee_model import (
     PatchEmployeeRequest,
@@ -53,26 +57,11 @@ get_employees = GetAllEmployeesService()
 
 @router.get("/", response_model=EmployeeListResponse)
 def get_all_employee(
-    page: int = 1,
-    size: int = 10,
-    name: str | None = None,
-    department: str | None = None,
-    role: str | None = None,
-    is_active: bool | None = None,
-    manager_id: int | None = None,
+    request: Annotated[GetAllEmployeeRequest, Query()],
     current_admin=Depends(get_current_user),
 ):
     logger.info("GET /employees called")
-    return get_employees.get_all(
-        current_admin,
-        page=page,
-        size=size,
-        name=name,
-        department=department,
-        role=role,
-        is_active=is_active,
-        manager_id=manager_id,
-    )
+    return get_employees.get_all(current_admin, request)
 
 
 patch = PatchEmployeeService()

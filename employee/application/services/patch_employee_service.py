@@ -3,18 +3,15 @@ from datetime import date
 
 from common.exception.bad_request_exception import (
     EmployeeMustBeAdultException,
-    InvalidCurrencyException,
     InvalidDateOfBirthException,
     InvalidJoiningDateException,
-    InvalidRoleException,
-    ManagerDoesnotExistException,
 )
-from common.exception.conflict_exception import EmployeeWithEmailAlreadyExistsException
 from common.exception.not_found_exception import EmployeeWithIdNotFoundException
-from common.utils.date_validator import DateValidator
+from common.utils.request_validation import RequestValidation
 from employee.application.models.request.patch_employee_model import (
     PatchEmployeeRequest,
 )
+from employee.application.validations.employee_validator import EmployeeValidator
 from employee.infrastructure.repository.employee_repository import EmployeeRepository
 
 logger = logging.getLogger(__name__)
@@ -34,31 +31,14 @@ class PatchEmployeeService:
                 logger.warning(f"Employee {id} not found")
                 raise EmployeeWithIdNotFoundException()
 
-            if request.email is not None:
-                existing_emp = repository.get_employee_by_email(request.email)
-                if existing_emp is not None and existing_emp.id != id:
-                    logger.warning(f"Employee with email {request.email} already exist")
-                    raise EmployeeWithEmailAlreadyExistsException()
-
-            if request.role is not None:
-                if request.role not in ("admin", "employee"):
-                    logger.warning(f"Invalid Role: {request.role}")
-                    raise InvalidRoleException()
-
-            if request.manager_id is not None:
-                manager = repository.get_employee_by_id(request.manager_id)
-                if manager is None:
-                    logger.warning(f"Manager {request.manager_id} not found")
-                    raise ManagerDoesnotExistException()
-
-            if request.currency is not None and request.currency not in ("INR", "USD"):
-                logger.warning("Invalid Currency for Salary")
-                raise InvalidCurrencyException()
+            request = EmployeeValidator.validate_employee(request, repository)
 
             update_data = request.model_dump(exclude_unset=True)
 
             if "date_of_birth" in update_data:
-                dob = DateValidator.validate(update_data["date_of_birth"])
+                dob = RequestValidation.validate_date(
+                    update_data["date_of_birth"], "date_of_birth"
+                )
                 if dob > date.today():
                     logger.warning("Invalid Date of Birth")
                     raise InvalidDateOfBirthException()
@@ -73,7 +53,9 @@ class PatchEmployeeService:
                 update_data["date_of_birth"] = dob
 
             if "date_of_join" in update_data:
-                doj = DateValidator.validate(update_data["date_of_join"])
+                doj = RequestValidation.validate_date(
+                    update_data["date_of_join"], "date_of_join"
+                )
                 if doj > date.today():
                     logger.warning("Invalid Date of Join")
                     raise InvalidJoiningDateException()

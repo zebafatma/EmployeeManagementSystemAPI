@@ -5,15 +5,12 @@ from common.exception.bad_request_exception import (
     EmployeeMustBeAdultException,
     InvalidDateOfBirthException,
     InvalidJoiningDateException,
-    InvalidPhoneNumberException,
-    InvalidRoleException,
-    ManagerDoesnotExistException,
 )
-from common.exception.conflict_exception import EmployeeWithEmailAlreadyExistsException
-from common.utils.date_validator import DateValidator
+from common.utils.request_validation import RequestValidation
 from employee.application.models.request.create_employee_model import (
     CreateEmployeeRequest,
 )
+from employee.application.validations.employee_validator import EmployeeValidator
 from employee.infrastructure.entities.employee_entity import Employee
 from employee.infrastructure.repository.employee_repository import EmployeeRepository
 
@@ -27,33 +24,19 @@ class CreateEmployeeService:
 
         repository = EmployeeRepository()
         try:
-            dob = DateValidator.validate(request.date_of_birth)
-            doj = DateValidator.validate(request.date_of_join)
+            request = EmployeeValidator.validate_employee(request, repository)
 
-            employee = repository.get_employee_by_email(request.email)
-
-            if employee:
-                logger.warning(f"Email {employee.email} already exists.")
-                raise EmployeeWithEmailAlreadyExistsException()
-
-            if request.role not in ("admin", "employee"):
-                logger.warning(f"Invalid role {request.role}")
-                raise InvalidRoleException()
-
-            if request.manager_id is not None:
-                manager = repository.get_employee_by_id(request.manager_id)
-                if manager is None:
-                    logger.warning(
-                        f"Manager with id: {request.manager_id} doesnot exist."
-                    )
-                    raise ManagerDoesnotExistException()
+            dob = RequestValidation.validate_date(
+                request.date_of_birth, "date_of_birth"
+            )
+            doj = RequestValidation.validate_date(request.date_of_join, "date_of_join")
 
             if dob > date.today():
-                logger.warning("Invalid Date of Birth")
+                logger.error("Invalid Date of Birth")
                 raise InvalidDateOfBirthException()
 
             if doj > date.today():
-                logger.warning("Invalid Date of Join")
+                logger.error("Invalid Date of Join")
                 raise InvalidJoiningDateException()
 
             age = (
@@ -62,14 +45,8 @@ class CreateEmployeeService:
                 - ((date.today().month, date.today().day) < (dob.month, dob.day))
             )
             if age < 18:
-                logger.warning("Employee not an Adult")
+                logger.error("Employee not an Adult")
                 raise EmployeeMustBeAdultException()
-
-            if not request.phone_no.isdigit() or len(request.phone_no) != 10:
-                logger.warning(
-                    f"Invalid Phone Number request for Employee {request.email}"
-                )
-                raise InvalidPhoneNumberException()
 
             employee = Employee(
                 role=request.role,

@@ -19,13 +19,13 @@ class SigninService:
         try:
             admin = repository.get_admin_by_email(request.email)
             if admin is None:
-                logger.warning(f"Invalid Credentials provided by {request.email}")
+                logger.error(f"Invalid Credentials provided by {request.email}")
                 raise InvalidCredentialsException()
             if not verify_password(request.password, admin.password):
-                logger.warning(f"Invalid Creadentials provided by {request.email}")
+                logger.error(f"Invalid Creadentials provided by {request.email}")
                 raise InvalidCredentialsException()
             if not admin.is_active:
-                logger.warning(f"Inactive admin: {request.email}")
+                logger.error(f"Inactive admin: {request.email}")
                 raise InactiveAccountException()
             repository.update_last_login(admin)
             access_token = create_access_token({"sub": admin.email, "id": admin.id})

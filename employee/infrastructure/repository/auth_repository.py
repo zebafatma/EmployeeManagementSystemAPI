@@ -9,9 +9,11 @@ logger = logging.getLogger(__name__)
 
 class AuthRepository:
     def __init__(self):
+        logger.info("Starting Databse Session for Authorization")
         self.db = SessionLocal()
 
     def get_admin_by_email(self, email: str):
+        logger.info("Repository method 'get_admin_by_email' called")
         return (
             self.db.query(AdminCredentials)
             .filter(AdminCredentials.email == email)
@@ -19,6 +21,7 @@ class AuthRepository:
         )
 
     def create_admin(self, admin: AdminCredentials):
+        logger.info("Repository method 'create_admin' called")
         try:
             self.db.add(admin)
             self.db.commit()
@@ -30,6 +33,7 @@ class AuthRepository:
             raise
 
     def update_last_login(self, admin: AdminCredentials):
+        logger.info("Repository method 'update_last_login' called")
         try:
             if admin is None:
                 return None
@@ -43,4 +47,5 @@ class AuthRepository:
             raise
 
     def close(self):
+        logger.info("Closing Databse Session for Authorization")
         self.db.close()
