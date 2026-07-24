@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 
-from common.dependencies import get_current_user
+from common.dependencies.auth_dependency.get_current_user_dependency import get_current_user
 from employee.application.models.request.create_employee_model import (
     CreateEmployeeRequest,
 )
@@ -19,66 +19,66 @@ from employee.application.models.response.employee_list_response_model import (
 from employee.application.models.response.employee_response_model import (
     EmployeeResponse,
 )
+from common.dependencies.service_dependency.employee_service_dependency import get_all_employee_service, get_employee_service, create_employee_service, patch_employee_service, delete_employee_service
 from employee.application.models.response.message_response_model import MessageResponse
-from employee.application.services.create_employee_service import CreateEmployeeService
-from employee.application.services.delete_employee_service import DeleteEmployeeService
-from employee.application.services.get_all_employee_service import (
-    GetAllEmployeesService,
+from employee.application.services.interface.create_employee_service_interface import CreateEmployeeServiceInterface
+from employee.application.services.interface.delete_employee_service_interface import DeleteEmployeeServiceInterface
+from employee.application.services.interface.get_all_employee_service_interface import (
+    GetAllEmployeeServiceInterface,
 )
-from employee.application.services.get_employee_service import GetEmployeeService
-from employee.application.services.patch_employee_service import PatchEmployeeService
+from employee.application.services.interface.get_employee_service_interface import GetEmployeeServiceInterface
+from employee.application.services.interface.patch_employee_service_interface import PatchEmployeeServiceInterface
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/employees", tags=["Employees"])
 
-create = CreateEmployeeService()
-
 
 @router.post("/", response_model=EmployeeResponse)
 def create_employee(
-    request: CreateEmployeeRequest, current_admin=Depends(get_current_user)
+    request: CreateEmployeeRequest, 
+    current_admin=Depends(get_current_user),
+    service:CreateEmployeeServiceInterface=Depends(create_employee_service)
 ):
     logger.info("POST /employees called")
-    return create.create(request, current_admin)
-
-
-get_employee = GetEmployeeService()
+    return service.create(request, current_admin)
 
 
 @router.get("/{id}", response_model=EmployeeResponse)
-def get_employee_by_id(id: int, current_admin=Depends(get_current_user)):
+def get_employee_by_id(
+    id: int, 
+    current_admin=Depends(get_current_user),
+    service:GetEmployeeServiceInterface=Depends(get_employee_service)
+):
     logger.info("GET /employees/{id} called")
-    return get_employee.get_employee(id, current_admin)
-
-
-get_employees = GetAllEmployeesService()
+    return service.get_employee(id, current_admin)
 
 
 @router.get("/", response_model=EmployeeListResponse)
 def get_all_employee(
     request: Annotated[GetAllEmployeeRequest, Query()],
     current_admin=Depends(get_current_user),
+    service:GetAllEmployeeServiceInterface=Depends(get_all_employee_service)
 ):
     logger.info("GET /employees called")
-    return get_employees.get_all(current_admin, request)
-
-
-patch = PatchEmployeeService()
+    return service.get_all(current_admin, request)
 
 
 @router.patch("/{id}", response_model=EmployeeResponse)
 def patch_employee(
-    id: int, request: PatchEmployeeRequest, current_admin=Depends(get_current_user)
+    id: int, 
+    request: PatchEmployeeRequest, 
+    current_admin=Depends(get_current_user),
+    service:PatchEmployeeServiceInterface=Depends(patch_employee_service)
 ):
     logger.info("PATCH /employees/{id} called")
-    return patch.patch(id, request, current_admin)
-
-
-delete = DeleteEmployeeService()
+    return service.patch(id, request, current_admin)
 
 
 @router.delete("/{id}", response_model=MessageResponse)
-def delete_employee(id: int, current_admin=Depends(get_current_user)):
+def delete_employee(
+    id: int, 
+    current_admin=Depends(get_current_user),
+    service:DeleteEmployeeServiceInterface=Depends(delete_employee_service)):
     logger.info("DELETE /employees/{id} called")
-    return delete.delete(id, current_admin)
+    return service.delete(id, current_admin)

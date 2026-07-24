@@ -11,27 +11,31 @@ from common.utils.request_validation import RequestValidation
 from employee.application.models.request.patch_employee_model import (
     PatchEmployeeRequest,
 )
+from employee.application.services.interface.patch_employee_service_interface import PatchEmployeeServiceInterface
 from employee.application.validations.employee_validator import EmployeeValidator
-from employee.infrastructure.repository.employee_repository import EmployeeRepository
+from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
 
 logger = logging.getLogger(__name__)
 
 
-class PatchEmployeeService:
+class PatchEmployeeService(PatchEmployeeServiceInterface):
+
+    def __init__(self, repository:EmployeeRepositoryInterface):
+        self.repository=repository
+
     def patch(self, id: int, request: PatchEmployeeRequest, current_admin):
 
         logger.info(f"Update request recieved by admin {current_admin.id}")
 
-        repository = EmployeeRepository()
         try:
 
-            employee = repository.get_employee_by_id(id)
+            employee = self.repository.get_employee_by_id(id)
 
             if employee is None:
                 logger.warning(f"Employee {id} not found")
-                raise EmployeeWithIdNotFoundException()
+                raise EmployeeWithIdNotFoundException(id)
 
-            request = EmployeeValidator.validate_employee(request, repository)
+            request = EmployeeValidator.validate_employee(request, self.repository)
 
             update_data = request.model_dump(exclude_unset=True)
 
@@ -69,6 +73,6 @@ class PatchEmployeeService:
             logger.info(
                 f"Employee {id} updated successfully by admin {current_admin.id}"
             )
-            return repository.update(employee)
+            return self.repository.update(employee)
         finally:
-            repository.close()
+            self.repository.close()

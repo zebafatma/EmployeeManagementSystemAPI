@@ -2,11 +2,12 @@ import logging
 
 from data.database import SessionLocal
 from employee.infrastructure.entities.employee_entity import Employee
+from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
 
 logger = logging.getLogger(__name__)
 
 
-class EmployeeRepository:
+class EmployeeRepository(EmployeeRepositoryInterface):
     def __init__(self):
         logger.info("Starting Database Session for Employee")
         self.db = SessionLocal()

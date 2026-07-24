@@ -17,3 +17,4 @@ class CreateEmployeeRequest(BaseModel):
     date_of_join: str
     manager_id: int
     salary: int
+    currency:str

@@ -7,17 +7,21 @@ from common.exception.bad_request_exception import (
 from employee.application.models.request.get_all_employee_request_model import (
     GetAllEmployeeRequest,
 )
-from employee.infrastructure.repository.employee_repository import EmployeeRepository
+from employee.application.services.interface.get_all_employee_service_interface import GetAllEmployeeServiceInterface
+from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
 
 logger = logging.getLogger(__name__)
 
 
-class GetAllEmployeesService:
+class GetAllEmployeesService(GetAllEmployeeServiceInterface):
+
+    def __init__(self, repository:EmployeeRepositoryInterface):
+        self.repository=repository
+
     def get_all(self, current_admin, request: GetAllEmployeeRequest):
 
         logger.info(f"Get All request recieved by admin {current_admin.id}")
 
-        repository = EmployeeRepository()
         try:
 
             if request.page < 1:
@@ -27,7 +31,9 @@ class GetAllEmployeesService:
                 logger.error(f"Invalid Page Size: {request.size}")
                 raise InvalidPageSizeException
             offset = (request.page - 1) * request.size
-            employees, total_records = repository.get_employees(
+            logger.info(type(self.repository))
+            logger.info(self.repository)
+            employees, total_records = self.repository.get_employees(
                 offset=offset, request=request
             )
             total_pages = (total_records + request.size - 1) // request.size
@@ -43,4 +49,4 @@ class GetAllEmployeesService:
                 "employees": employees,
             }
         finally:
-            repository.close()
+            self.repository.close()

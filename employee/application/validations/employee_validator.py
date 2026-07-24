@@ -54,7 +54,7 @@ class EmployeeValidator:
             request.salary = RequestValidation.validate_salary(request.salary)
 
         if request.currency is not None:
-            request.currenct = RequestValidation.validate_currency(request.currency)
+            request.currency = RequestValidation.validate_currency(request.currency)
 
         if request.email is not None:
             employee = repository.get_employee_by_email(request.email)

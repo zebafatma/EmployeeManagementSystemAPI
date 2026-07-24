@@ -6,25 +6,29 @@ from common.exception.bad_request_exception import (
     InvalidDateOfBirthException,
     InvalidJoiningDateException,
 )
+from employee.application.services.interface.create_employee_service_interface import CreateEmployeeServiceInterface
 from common.utils.request_validation import RequestValidation
 from employee.application.models.request.create_employee_model import (
     CreateEmployeeRequest,
 )
 from employee.application.validations.employee_validator import EmployeeValidator
 from employee.infrastructure.entities.employee_entity import Employee
-from employee.infrastructure.repository.employee_repository import EmployeeRepository
+from employee.infrastructure.repository.interface.employee_repository_interface import EmployeeRepositoryInterface
 
 logger = logging.getLogger(__name__)
 
 
-class CreateEmployeeService:
+class CreateEmployeeService(CreateEmployeeServiceInterface):
+
+    def __init__(self, repository:EmployeeRepositoryInterface):
+        self.repository=repository
+
     def create(self, request: CreateEmployeeRequest, current_admin):
 
         logger.info(f"Create request recieved by admin {current_admin.id}")
 
-        repository = EmployeeRepository()
         try:
-            request = EmployeeValidator.validate_employee(request, repository)
+            request = EmployeeValidator.validate_employee(request, self.repository)
 
             dob = RequestValidation.validate_date(
                 request.date_of_birth, "date_of_birth"
@@ -68,10 +72,10 @@ class CreateEmployeeService:
                 updated_by=current_admin.id,
             )
 
-            created_employee = repository.create(employee)
+            created_employee = self.repository.create(employee)
             logger.info(
                 f"Employee {created_employee.id} created successfully by admin {current_admin.id}"
             )
             return created_employee
         finally:
-            repository.close()
+            self.repository.close()

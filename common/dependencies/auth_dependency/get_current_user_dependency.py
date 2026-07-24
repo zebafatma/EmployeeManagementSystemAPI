@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from common.auth.jwt_handler import decode_access_token
 from common.exception.unauthorized_exception import InvalidTokenException
 from data.database import get_db
-from employee.infrastructure.repository.auth_repository import AuthRepository
+from employee.infrastructure.repository.implementation.auth_repository import AuthRepository
 
 security = HTTPBearer()
 
